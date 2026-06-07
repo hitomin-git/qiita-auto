@@ -1,10 +1,11 @@
+import * as fs from "fs";
+import * as path from "path";
 import { execSync } from "child_process";
 import * as dotenv from "dotenv";
 import {
   listGeneratedSlugs,
   loadPhaseFile,
   phaseFileExists,
-  savePhaseFile,
 } from "../utils/fileManager";
 import { logger } from "../utils/logger";
 
@@ -15,12 +16,20 @@ interface ScoreResult {
   total: number;
 }
 
+function publishFilePath(slug: string): string {
+  return path.resolve(process.cwd(), "public", `${slug}.md`);
+}
+
+function publishFileExists(slug: string): boolean {
+  return fs.existsSync(publishFilePath(slug));
+}
+
 function listPublishCandidates(): string[] {
   return listGeneratedSlugs().filter(
     (s) =>
       phaseFileExists(s, "score.json") &&
       phaseFileExists(s, "rewrite.md") &&
-      !phaseFileExists(s, "index.md")
+      !publishFileExists(s)
   );
 }
 
@@ -64,10 +73,11 @@ function main() {
     process.exit(1);
   }
 
-  // rewrite.md → index.md にコピー
+  // rewrite.md → public/{slug}.md にコピー（private: true で限定共有に設定）
   const rewriteContent = loadPhaseFile(slug, "rewrite.md");
-  savePhaseFile(slug, "index.md", rewriteContent);
-  logger.success(`rewrite.md → index.md にコピーしました`);
+  const publishContent = rewriteContent.replace(/^private:\s*false$/m, "private: true");
+  fs.writeFileSync(publishFilePath(slug), publishContent, "utf-8");
+  logger.success(`rewrite.md → public/${slug}.md にコピーしました（限定共有: private: true）`);
 
   // Qiita に投稿
   logger.info(`Qiita に投稿します: ${slug}`);
