@@ -22,6 +22,16 @@ export function reviewArticle(content: string): ReviewResult {
     warnings.push(`言語識別子のないコードブロックが ${codeBlocks.length} 箇所あります`);
   }
 
+  // 日本語テキストに ** が直接隣接しているケースを検出（スペース必須）
+  // 例: この**太字**テキスト → NG / この **太字** テキスト → OK
+  const boldNoSpace = content.match(/[　-鿿＀-￯]\*\*|\*\*[　-鿿＀-￯]/g) ?? [];
+  if (boldNoSpace.length > 0) {
+    warnings.push(
+      `日本語に隣接する **太字** にスペースがありません（${boldNoSpace.length} 箇所）。` +
+      `「この**太字**テキスト」→「この **太字** テキスト」に修正してください`
+    );
+  }
+
   if (!/^## はじめに/m.test(content)) {
     warnings.push("「## はじめに」セクションが見つかりません");
   }
