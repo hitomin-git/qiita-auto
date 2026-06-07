@@ -9,8 +9,8 @@ export function saveArticle(slug: string, content: string): string {
   return filePath;
 }
 
-export function loadArticle(slug: string): string {
-  const filePath = path.resolve(process.cwd(), "public", slug, "index.md");
+export function loadDraft(slug: string): string {
+  const filePath = path.resolve(process.cwd(), "public", slug, "draft.md");
   return fs.readFileSync(filePath, "utf-8");
 }
 

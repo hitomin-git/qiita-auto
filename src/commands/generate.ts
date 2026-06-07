@@ -24,7 +24,7 @@ function main() {
     console.log();
   });
 
-  logger.info("生成後: public/{slug}/index.md に保存し、topics.yaml の status を generated に変更してください");
+  logger.info("生成後: public/{slug}/draft.md に保存し、topics.yaml の status を generated に変更してください");
 }
 
 main();

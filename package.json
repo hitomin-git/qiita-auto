@@ -7,6 +7,7 @@
     "review": "ts-node src/commands/review.ts",
     "rewrite": "ts-node src/commands/rewrite.ts",
     "score": "ts-node src/commands/score.ts",
+    "publish": "ts-node src/commands/publish.ts",
     "build": "tsc",
     "typecheck": "tsc --noEmit"
   },

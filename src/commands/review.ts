@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import {
   listGeneratedSlugs,
-  loadArticle,
+  loadDraft,
   phaseFileExists,
   extractFrontmatterField,
 } from "../utils/fileManager";
@@ -13,7 +13,7 @@ import { logger } from "../utils/logger";
 function buildReviewPrompt(slug: string): string {
   const templatePath = path.resolve(process.cwd(), "templates/prompts/review.txt");
   const template = fs.readFileSync(templatePath, "utf-8");
-  const draft = loadArticle(slug);
+  const draft = loadDraft(slug);
   const title = extractFrontmatterField(draft, "title");
   const topics = loadTopics();
   const topic = topics.find((t) => t.title === title);
@@ -26,7 +26,7 @@ function buildReviewPrompt(slug: string): string {
 }
 
 function listReviewCandidates(): string[] {
-  return listGeneratedSlugs().filter((s) => phaseFileExists(s, "index.md"));
+  return listGeneratedSlugs().filter((s) => phaseFileExists(s, "draft.md"));
 }
 
 function main() {
@@ -45,8 +45,8 @@ function main() {
     process.exit(0);
   }
 
-  if (!phaseFileExists(slug, "index.md")) {
-    logger.error(`index.md が見つかりません: public/${slug}/index.md`);
+  if (!phaseFileExists(slug, "draft.md")) {
+    logger.error(`draft.md が見つかりません: public/${slug}/draft.md`);
     process.exit(1);
   }
 
@@ -57,7 +57,7 @@ function main() {
   }
 
   // 構造チェック（自動）
-  const content = loadArticle(slug);
+  const content = loadDraft(slug);
   const result = reviewArticle(content);
   logger.info(`【構造チェック】 ${slug}`);
   if (result.errors.length > 0) {

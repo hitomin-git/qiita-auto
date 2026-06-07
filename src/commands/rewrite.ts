@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import {
   listGeneratedSlugs,
-  loadArticle,
+  loadDraft,
   loadPhaseFile,
   phaseFileExists,
   extractFrontmatterField,
@@ -13,7 +13,7 @@ import { logger } from "../utils/logger";
 function buildRewritePrompt(slug: string): string {
   const templatePath = path.resolve(process.cwd(), "templates/prompts/rewrite.txt");
   const template = fs.readFileSync(templatePath, "utf-8");
-  const draft = loadArticle(slug);
+  const draft = loadDraft(slug);
   const review = loadPhaseFile(slug, "review.md");
   const title = extractFrontmatterField(draft, "title");
   const topics = loadTopics();
@@ -29,7 +29,7 @@ function buildRewritePrompt(slug: string): string {
 
 function listRewriteCandidates(): string[] {
   return listGeneratedSlugs().filter(
-    (s) => phaseFileExists(s, "index.md") && phaseFileExists(s, "review.md")
+    (s) => phaseFileExists(s, "draft.md") && phaseFileExists(s, "review.md")
   );
 }
 
@@ -49,8 +49,8 @@ function main() {
     process.exit(0);
   }
 
-  if (!phaseFileExists(slug, "index.md")) {
-    logger.error(`index.md が見つかりません: public/${slug}/index.md`);
+  if (!phaseFileExists(slug, "draft.md")) {
+    logger.error(`draft.md が見つかりません: public/${slug}/draft.md`);
     process.exit(1);
   }
 
