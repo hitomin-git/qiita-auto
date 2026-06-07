@@ -1,0 +1,23 @@
+{
+  "name": "qiita-auto",
+  "version": "0.1.0",
+  "description": "Qiita記事自動生成システム",
+  "scripts": {
+    "generate": "ts-node src/commands/generate.ts",
+    "review": "ts-node src/commands/review.ts",
+    "rewrite": "ts-node src/commands/rewrite.ts",
+    "score": "ts-node src/commands/score.ts",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}

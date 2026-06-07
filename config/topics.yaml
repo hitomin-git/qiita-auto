@@ -1,0 +1,21 @@
+# 記事テーマ一覧
+# - title: 記事タイトル（Claude への指示に使用）
+# - tags:  Qiita タグ（最大5つ）
+# - level: 対象読者レベル（beginner / intermediate / advanced）
+# - status: pending（未生成）/ generated（生成済）/ published（投稿済）
+
+topics:
+  - title: "TypeScriptで始めるNode.js入門"
+    tags: ["TypeScript", "Node.js", "初心者向け"]
+    level: beginner
+    status: pending
+
+  - title: "GitHub Actionsで自動化を始める方法"
+    tags: ["GitHub", "GitHubActions", "CI/CD", "自動化"]
+    level: intermediate
+    status: pending
+
+  - title: "dotenvで環境変数を安全に管理する"
+    tags: ["Node.js", "TypeScript", "セキュリティ", "環境変数"]
+    level: beginner
+    status: pending
