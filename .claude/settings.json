@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(NODE_OPTIONS=--use-system-ca npm run fetch -- *)",
+      "Bash(NODE_OPTIONS=--use-system-ca npm run generate*)",
+      "Bash(NODE_OPTIONS=--use-system-ca npm run review -- *)",
+      "Bash(NODE_OPTIONS=--use-system-ca npm run rewrite -- *)",
+      "Bash(NODE_OPTIONS=--use-system-ca npm run score -- *)",
+      "Bash(NODE_OPTIONS=--use-system-ca npm run publish -- *)",
+      "Bash(ls public/*)",
+      "Bash(type sources/*)",
+      "Write(public/**)",
+      "Edit(public/**)",
+      "Edit(config/topics.yaml)"
+    ]
+  }
+}

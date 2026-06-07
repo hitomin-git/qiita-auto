@@ -13,6 +13,9 @@ dist/
 # Generated articles (managed by Qiita, not source code)
 public/
 
+# URL batch input files
+sources/
+
 # OS
 .DS_Store
 Thumbs.db

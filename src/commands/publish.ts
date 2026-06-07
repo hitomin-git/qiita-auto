@@ -75,7 +75,9 @@ function main() {
 
   // rewrite.md → public/{slug}.md にコピー（private: true で限定共有に設定）
   const rewriteContent = loadPhaseFile(slug, "rewrite.md");
-  const publishContent = rewriteContent.replace(/^private:\s*false$/m, "private: true");
+  const publishContent = rewriteContent
+    .replace(/^private:\s*false$/m, "private: true")
+    .replace(/^organization_url_name:\s*(?!null)\S+$/m, "organization_url_name: null");
   fs.writeFileSync(publishFilePath(slug), publishContent, "utf-8");
   logger.success(`rewrite.md → public/${slug}.md にコピーしました（限定共有: private: true）`);
 
