@@ -1,10 +1,39 @@
-記事をQiitaに限定共有投稿します。
+# Qiita記事 投稿
 
-**実行条件：**
-- `public/$ARGUMENTS/score.json` が存在し `pass: true` であること
-- `public/$ARGUMENTS/rewrite.md` が存在すること
-- `.env` に `QIITA_TOKEN` が設定されていること
+`$ARGUMENTS` で指定された slug の記事をQiitaに限定共有で投稿します。
 
-**投稿実行：**
+---
 
-!NODE_OPTIONS=--use-system-ca npm run publish -- $ARGUMENTS
+## Step 1: 品質ゲートの確認
+
+`public/$ARGUMENTS/score.json` を Read する。
+
+- ファイルが存在しなければ「score.json がありません。先に /qiita-score を実行してください」と伝えて終了する。
+- `pass` が `false` であれば「採点結果がFAIL（〇〇点）のため投稿できません。/qiita-rewrite → /qiita-score をやり直してください」と伝えて終了する。
+
+---
+
+## Step 2: 投稿用ファイルの作成
+
+`public/$ARGUMENTS/rewrite.md` を Read し、以下の変換をして `public/$ARGUMENTS.md` に Write する：
+
+- `private: false` → `private: true`（限定共有にする）
+- `organization_url_name: prum` はそのまま維持する
+
+---
+
+## Step 3: Qiitaへの投稿
+
+`.env` ファイルを Read して `QIITA_TOKEN=<値>` の行から値を取得する。
+
+Bash で以下を実行する：
+
+```bash
+QIITA_TOKEN=<取得したトークン> npx qiita publish $ARGUMENTS
+```
+
+---
+
+## 完了報告
+
+投稿完了後、slug と記事URLを報告する。

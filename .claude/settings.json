@@ -1,21 +1,6 @@
 {
   "permissions": {
     "allow": [
-      "Bash(NODE_OPTIONS=--use-system-ca npm run fetch -- *)",
-      "Bash(NODE_OPTIONS=--use-system-ca npm run generate*)",
-      "Bash(NODE_OPTIONS=--use-system-ca npm run review -- *)",
-      "Bash(NODE_OPTIONS=--use-system-ca npm run rewrite -- *)",
-      "Bash(NODE_OPTIONS=--use-system-ca npm run score -- *)",
-      "Bash(NODE_OPTIONS=--use-system-ca npm run publish -- *)",
-      "Bash(ls public/*)",
-      "Bash(type sources/*)",
-      "Bash(mkdir*)",
-      "PowerShell(*npm run fetch*)",
-      "PowerShell(*npm run generate*)",
-      "PowerShell(*npm run review*)",
-      "PowerShell(*npm run rewrite*)",
-      "PowerShell(*npm run score*)",
-      "PowerShell(*npm run publish*)",
       "Write(public/**)",
       "Write(public/**/*)",
       "Write(public/**/*.md)",
@@ -24,7 +9,8 @@
       "Edit(public/**/*)",
       "Edit(public/**/*.md)",
       "Edit(public/**/*.json)",
-      "Edit(config/topics.yaml)"
+      "Edit(config/topics.yaml)",
+      "Bash(npx qiita publish *)"
     ]
   }
 }
