@@ -2,9 +2,25 @@
 
 **あなたが行うこと：**
 1. 出力された採点プロンプトの基準に従い記事を採点する
-2. 採点結果を `public/$ARGUMENTS/score.json` にJSON形式で保存する
-   - 形式: `{"pass": true/false, "total": 0-100, "breakdown": {...}, "comment": "..."}`
-   - 80点以上でpass: true
+2. 採点結果を `public/$ARGUMENTS/score.json` に以下の形式で保存する（80点以上でpass: true）:
+
+```json
+{
+  "slug": "...",
+  "title": "...",
+  "total": <整数>,
+  "pass": <true|false>,
+  "criteria": {
+    "technical_accuracy": <整数>,
+    "beginner_readability": <整数>,
+    "typos": <整数>,
+    "code_accuracy": <整数>,
+    "qiita_completeness": <整数>
+  },
+  "feedback": "...",
+  "scored_at": "..."
+}
+```
 
 **プロンプト出力：**
 

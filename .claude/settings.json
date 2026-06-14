@@ -9,8 +9,21 @@
       "Bash(NODE_OPTIONS=--use-system-ca npm run publish -- *)",
       "Bash(ls public/*)",
       "Bash(type sources/*)",
+      "Bash(mkdir*)",
+      "PowerShell(*npm run fetch*)",
+      "PowerShell(*npm run generate*)",
+      "PowerShell(*npm run review*)",
+      "PowerShell(*npm run rewrite*)",
+      "PowerShell(*npm run score*)",
+      "PowerShell(*npm run publish*)",
       "Write(public/**)",
+      "Write(public/**/*)",
+      "Write(public/**/*.md)",
+      "Write(public/**/*.json)",
       "Edit(public/**)",
+      "Edit(public/**/*)",
+      "Edit(public/**/*.md)",
+      "Edit(public/**/*.json)",
       "Edit(config/topics.yaml)"
     ]
   }

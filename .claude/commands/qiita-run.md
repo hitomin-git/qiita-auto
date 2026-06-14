@@ -1,4 +1,27 @@
-Qiita記事の生成から限定公開投稿まで自動実行します。
+Qiita記事の生成から限定公開投稿まで自動実行します。ユーザーへの確認は一切行わず、各ステップを連続して最後まで実行してください。
+
+## 共通ルール（全モード必須）
+
+- 記事は必ず `docs/hitomi-style-guide.md` のスタイルに従って執筆する
+- `score.json` は必ず以下の形式で保存する（100点満点・80点以上PASS）：
+  ```json
+  {
+    "slug": "...",
+    "title": "...",
+    "total": <整数>,
+    "pass": <true|false>,
+    "criteria": {
+      "technical_accuracy": <整数>,
+      "beginner_readability": <整数>,
+      "typos": <整数>,
+      "code_accuracy": <整数>,
+      "qiita_completeness": <整数>
+    },
+    "feedback": "...",
+    "scored_at": "..."
+  }
+  ```
+- 各ステップ完了後はすぐ次のステップに進む（ユーザーへの確認不要）
 
 ## 引数の判定
 
@@ -18,10 +41,11 @@ Qiita記事の生成から限定公開投稿まで自動実行します。
 
 !NODE_OPTIONS=--use-system-ca npm run generate
 
-出力されたプロンプトの指示に従い、記事を執筆してください。
+出力されたプロンプトの指示と `docs/hitomi-style-guide.md` に従い、記事を執筆してください。
 
 - slug を決定する（形式: `YYYY-MM-DD_title-lowercase-hyphenated`）
 - `public/{slug}/draft.md` にQiitaフロントマター付きMarkdownで保存
+- `public/{slug}/image-prompts.md` に画像プロンプト（3案×3箇所）を保存（画像生成は手動で行うため、プロンプトのみ保存）
 - `config/topics.yaml` の該当トピックの `status` を `generated` に変更
 - 決定した slug を記憶する（以降のステップで使用）
 
@@ -35,17 +59,17 @@ Qiita記事の生成から限定公開投稿まで自動実行します。
 
 !NODE_OPTIONS=--use-system-ca npm run fetch -- $ARGUMENTS
 
-出力されたプロンプトと slug を確認してください。
-プロンプトの指示に従い、以下の2ファイルを生成・保存してください：
+出力の `slug:` 行から slug を取得してください。
+プロンプトの指示（`docs/hitomi-style-guide.md` 含む）に従い、以下の2ファイルを生成・保存してください：
 
 - `public/{slug}/draft.md`（フロントマター付き記事全文）
-- `public/{slug}/image-prompts.md`（画像生成プロンプト 3案×3箇所）
+- `public/{slug}/image-prompts.md`（画像生成プロンプト 3案×3箇所、アニメ風・若い女性エンジニア主人公）※画像生成は手動で行う
 
 ### Step 2: レビュー
 
 !NODE_OPTIONS=--use-system-ca npm run review -- {slug}
 
-出力されたプロンプトに従ってレビューし、`public/{slug}/review.md` に保存してください。
+出力されたプロンプトに従い、`docs/hitomi-style-guide.md` の観点も含めてレビューし、`public/{slug}/review.md` に保存してください。
 
 ### Step 3: リライト
 
@@ -57,7 +81,7 @@ Qiita記事の生成から限定公開投稿まで自動実行します。
 
 !NODE_OPTIONS=--use-system-ca npm run score -- {slug}
 
-出力されたプロンプトに従い採点し、`public/{slug}/score.json` に保存してください。
+出力されたプロンプトに従い採点し、`public/{slug}/score.json` に**共通ルールの形式で**保存してください。
 
 **採点結果の判定：**
 - `pass: true`（80点以上）→ Step 5へ進む
@@ -70,7 +94,7 @@ Qiita記事の生成から限定公開投稿まで自動実行します。
 
 Qiitaに限定共有（private: true）で投稿します。
 
-完了後、投稿された slug と Qiita の URL を報告してください。
+完了後、投稿された slug と Qiita 記事IDを報告してください。
 
 ---
 
@@ -87,11 +111,10 @@ CSVファイル（`$ARGUMENTS`）を読み込み、URLを順番に処理して�
 - ヘッダー行（`url` という行）は無視する
 - 空行は無視する
 - 最大5件まで処理する（5件を超える場合は先頭5件のみ）
-- 処理済みのURL は後で確認できるよう記録しておく
 
 ### 各URLの処理
 
 取得した各URLに対して、**【URL モード】Step 1〜5** をそのまま実行してください。
 1件完了してから次のURLに進んでください。
 
-全件完了後、処理結果（slug と Qiita URL の一覧）を報告してください。
+全件完了後、処理結果（slug と Qiita 記事ID の一覧）を報告してください。

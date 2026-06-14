@@ -34,12 +34,15 @@ https://example.com/article2
 
 ```
 public/{slug}/
-├── draft.md      # Phase 1: 初稿（generate）
-├── review.md     # Phase 2: レビュー（review）
-├── rewrite.md    # Phase 3: リライト（rewrite）
-├── score.json    # Phase 4: 採点（score）
-└── index.md      # Phase 5: 投稿用（publish時に自動生成）
+├── draft.md           # Phase 1: 初稿（generate）
+├── image-prompts.md   # Phase 1: 画像プロンプト（手動で画像生成する際に使用）
+├── review.md          # Phase 2: レビュー（review）
+├── rewrite.md         # Phase 3: リライト（rewrite）
+├── score.json         # Phase 4: 採点（score）
+└── index.md           # Phase 5: 投稿用（publish時に自動生成）
 ```
+
+> **画像生成について**: `image-prompts.md` のプロンプトをもとに、Gemini等のAIサービスで手動生成する。
 
 ## slug の命名規則
 
@@ -51,15 +54,18 @@ public/{slug}/
 ## 重要なルール
 
 - 記事品質基準は `docs/article-rulebook.md` を参照すること
+- 執筆スタイルは `docs/hitomi-style-guide.md` に従うこと（先輩→後輩の温度感・会話例・読者を責めない・明日できる行動で締め）
 - フロントマターは必ずQiita CLI形式（`private: false` を含む）で記述
 - コードブロックには必ず言語識別子を付ける
 - 見出しは `##` から始める（`#` はタイトル相当のため本文に使わない）
 - 敬体（です・ます調）で統一する
+- score.json は100点満点・80点以上でPASS（publish の条件）
 
 ## npm scripts
 
 ```bash
-NODE_OPTIONS=--use-system-ca npm run generate        # 生成プロンプト表示
+NODE_OPTIONS=--use-system-ca npm run fetch -- <URL>    # URLからページ取得・プロンプト生成
+NODE_OPTIONS=--use-system-ca npm run generate          # topics.yaml から生成プロンプト表示
 NODE_OPTIONS=--use-system-ca npm run review -- <slug>  # レビュープロンプト表示
 NODE_OPTIONS=--use-system-ca npm run rewrite -- <slug> # リライトプロンプト表示
 NODE_OPTIONS=--use-system-ca npm run score -- <slug>   # 採点プロンプト表示
