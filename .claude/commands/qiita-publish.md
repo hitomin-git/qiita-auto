@@ -17,8 +17,8 @@
 
 `public/$ARGUMENTS/rewrite.md` を Read し、以下の変換をして `public/$ARGUMENTS.md` に Write する：
 
-- `private: false` → `private: true`（限定共有にする）
-- `organization_url_name: prum` はそのまま維持する
+- `private: false` → `private: true`（限定共有）
+- `organization_url_name: prum` → `organization_url_name: null`（限定共有時は組織紐づけ不可）
 
 ---
 

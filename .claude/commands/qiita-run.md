@@ -152,7 +152,7 @@ slug を `YYYY-MM-DD_（URLの末尾パスセグメント）` で決定する。
 | 読者を責める表現がある | -5点/箇所 |
 | 教科書調・業務文書調の文体が続く | -5点 |
 
-**合格基準：80点以上でPASS**
+**合格基準：95点以上でPASS**
 
 `public/{slug}/score.json` に Write する：
 
@@ -175,15 +175,18 @@ slug を `YYYY-MM-DD_（URLの末尾パスセグメント）` で決定する。
 ```
 
 **判定：**
-- `pass: true` → Step 4（投稿）へ
-- `pass: false` → `score.json` と `rewrite.md` を削除して Step 2 に戻る（最大3回）
+- `pass: true`（95点以上）→ Step 4（投稿）へ
+- `pass: false`（95点未満）→ `score.json` と `rewrite.md` を削除して Step 2 に戻る（最大3回）
 - 3回FAILしたら停止して改善点を報告する
 
 ---
 
 ## Step 4: 投稿
 
-`public/{slug}/rewrite.md` を Read し、`private: false` → `private: true` に変換して `public/{slug}.md` に Write する。
+`public/{slug}/rewrite.md` を Read し、以下の変換をして `public/{slug}.md` に Write する：
+
+- `private: false` → `private: true`（限定共有）
+- `organization_url_name: prum` → `organization_url_name: null`（限定共有時は組織紐づけ不可）
 
 `.env` を Read して `QIITA_TOKEN` を取得し、Bash で実行する：
 
