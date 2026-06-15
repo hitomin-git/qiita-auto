@@ -13,6 +13,7 @@
       "Edit(public/**/*.md)",
       "Edit(public/**/*.json)",
       "Edit(config/topics.yaml)",
+      "Bash(mkdir *)",
       "Bash(npx qiita publish *)",
       "Bash(QIITA_TOKEN=*)",
       "WebFetch"
