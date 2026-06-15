@@ -1,4 +1,7 @@
 {
+  "env": {
+    "NODE_OPTIONS": "--use-system-ca"
+  },
   "permissions": {
     "allow": [
       "Write(public/**)",
@@ -11,6 +14,7 @@
       "Edit(public/**/*.json)",
       "Edit(config/topics.yaml)",
       "Bash(npx qiita publish *)",
+      "Bash(QIITA_TOKEN=*)",
       "WebFetch"
     ]
   }
