@@ -10,7 +10,8 @@
       "Edit(public/**/*.md)",
       "Edit(public/**/*.json)",
       "Edit(config/topics.yaml)",
-      "Bash(npx qiita publish *)"
+      "Bash(npx qiita publish *)",
+      "WebFetch"
     ]
   }
 }
