@@ -31,6 +31,36 @@ Claude Code（`claude` コマンド）を起動してスラッシュコマンド
 /qiita-run sources/urls.csv # CSV内のURLを最大5件バッチ処理
 ```
 
+> **ポイント:** 記事生成前に構成案をチャットに出力して確認を待ちます。「OK」または修正指示を返すと、そのまま最後（Qiita投稿）まで自動実行します。
+
+### CSVバッチ処理
+
+複数URLをまとめて処理したい場合は `sources/urls.csv` を使います。
+
+**ファイルの場所：** `sources/urls.csv`
+
+**フォーマット：**
+
+```csv
+url
+https://example.com/article-1
+https://example.com/article-2
+https://example.com/article-3
+```
+
+- 1行目はヘッダー行（`url` という列名）
+- 2行目以降に1行1URL で記載
+- 最大5件まで処理（6件目以降は無視）
+- 空行はスキップされる
+
+**実行：**
+
+```
+/qiita-run sources/urls.csv
+```
+
+1記事ずつ構成案の確認を取りながら順番に処理します。
+
 ### スラッシュコマンド一覧
 
 | コマンド | 説明 |

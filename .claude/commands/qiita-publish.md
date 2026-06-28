@@ -24,12 +24,10 @@
 
 ## Step 3: Qiitaへの投稿
 
-`.env` ファイルを Read して `QIITA_TOKEN=<値>` の行から値を取得する。
-
-Bash で以下を実行する：
+Bash で以下を実行する（`.env` を直接 source することでトークンをコマンド文字列に含めない）：
 
 ```bash
-QIITA_TOKEN=<取得したトークン> npx qiita publish $ARGUMENTS
+export $(grep -v '^#' .env | xargs) && npx qiita publish $ARGUMENTS
 ```
 
 ---

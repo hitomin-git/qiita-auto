@@ -1,10 +1,11 @@
 # Qiita記事 全自動実行
 
-Qiita記事の生成から限定公開投稿まで自動実行します。ユーザーへの確認は一切行わず、各ステップを連続して最後まで実行してください。
+Qiita記事の生成から限定公開投稿まで自動実行します。
+**構成案の確認（Step 1）でのみユーザーの入力を待ちます。確認後は最後まで自動実行します。**
 
 ---
 
-## Step 0: モードの判定と記事準備
+## Step 0: モードの判定と前準備
 
 `$ARGUMENTS` を確認して実行モードを決める：
 
@@ -14,26 +15,20 @@ Qiita記事の生成から限定公開投稿まで自動実行します。ユー
 | `http://` または `https://` で始まる | **URL モード** |
 | `.csv` で終わる | **CSV バッチモード** |
 
-### topics.yaml モード
-
-`config/topics.yaml` を Read して `status: pending` のトピックを1件選ぶ。
-なければ「pending なトピックがありません」と伝えて終了する。
-
-以下も Read する：
+以下を Read する：
 - `docs/hitomi-style-guide.md`
 - `docs/article-rulebook.md`
 - `templates/header.md`
 - `templates/footer.md`
 
+### topics.yaml モード
+
+`config/topics.yaml` を Read して `status: pending` のトピックを1件選ぶ。
+なければ「pending なトピックがありません」と伝えて終了する。
+
 slug を決定する（形式：`YYYY-MM-DD_title-lowercase-hyphenated`、最大50文字）。
 
-記事を執筆し、以下に Write する：
-- `public/{slug}/draft.md`（フロントマター付き記事全文）
-- `public/{slug}/image-prompts.md`（画像生成プロンプト 3案×3箇所）
-
-`config/topics.yaml` の該当トピックの `status` を `generated` に Edit する。
-
-→ **Step 1（レビュー）へ進む**
+→ **Step 1（構成案提示）へ進む**
 
 ### URL モード
 
@@ -41,31 +36,108 @@ WebFetch で `$ARGUMENTS` のページを取得し、タイトルと本文を抽
 
 slug を `YYYY-MM-DD_（URLの末尾パスセグメント）` で決定する。
 
-以下も Read する：
-- `docs/hitomi-style-guide.md`
-- `docs/article-rulebook.md`
-- `templates/header.md`
-- `templates/footer.md`
-
-取得した参考ページをもとにオリジナルのQiita記事を執筆する（コピー禁止）。
-
-以下に Write する：
-- `public/{slug}/draft.md`
-- `public/{slug}/image-prompts.md`
-
-→ **Step 1（レビュー）へ進む**
+→ **Step 1（構成案提示）へ進む**
 
 ### CSV バッチモード
 
 `$ARGUMENTS` のファイルを Read してURL一覧を取得する（ヘッダー行・空行は無視、最大5件）。
 
-各URLに対して **URL モード → Step 1〜4** を順番に実行する。1件完了してから次へ進む。
+各URLに対して **URL モード → Step 1〜5** を順番に実行する（1件ずつ構成案確認を取る）。1件完了してから次へ進む。
 
 全件完了後、完了報告へ。
 
 ---
 
-## Step 1: レビュー
+## Step 1: 記事構成案の提示（ユーザー確認待ち）
+
+以下の構成案をチャットに出力し、ユーザーの確認・修正指示を待つ。
+
+```
+## 記事構成案
+
+**仮タイトル：** （タイトル）
+**対象読者：** （一言で）
+
+### 見出し構成
+1. ## はじめに — （1行概要）
+2. ## （セクション名） — （1行概要）
+3. ## （セクション名） — （1行概要）
+4. ## （セクション名） — （1行概要）
+5. ## まとめ — （1行概要）
+
+### 会話例のシチュエーション
+（先輩・後輩の会話を入れる場面と内容案）
+
+### 締めの「明日できる一行動」案
+（具体的な一文）
+
+---
+この構成でよければ「OK」、修正があれば内容を教えてください。
+```
+
+ユーザーから OK または修正指示を受け取ったら、その内容を反映して Step 2 へ進む。
+
+---
+
+## Step 2: 記事の執筆（generate）
+
+### フロントマター
+
+```
+---
+title: （タイトル）
+tags:
+  - （タグ1）
+  - （タグ2）
+private: false
+updated_at: ''
+id: null
+organization_url_name: prum
+slide: false
+ignorePublish: false
+---
+```
+
+### 記事の構成
+
+フロントマターの直後から `## はじめに` で始める（`# タイトル` は書かない。Qiita がフロントマターのタイトルを自動表示するため重複になる）。
+
+1. `## はじめに` — `templates/header.md` の内容をそのまま挿入する
+   - 直後にアイキャッチ画像プレースホルダー：
+     ```
+     <!-- 🖼️ IMAGE:EYECATCH | 画像生成プロンプトは image-prompts.md を参照 -->
+     ![アイキャッチ](IMAGE_EYECATCH_URL)
+     ```
+2. 本文セクション（`##` × 3〜5個）
+   - 中盤の最重要セクション直後にメイン画像プレースホルダー：
+     ```
+     <!-- 🖼️ IMAGE:MAIN | 画像生成プロンプトは image-prompts.md を参照 -->
+     ![メイン画像](IMAGE_MAIN_URL)
+     ```
+3. `## まとめ`
+   - まとめ内にまとめ画像プレースホルダー：
+     ```
+     <!-- 🖼️ IMAGE:FOOTER | 画像生成プロンプトは image-prompts.md を参照 -->
+     ![まとめ画像](IMAGE_FOOTER_URL)
+     ```
+   - `templates/footer.md` を末尾に挿入する
+
+執筆スタイル（docs/hitomi-style-guide.md に従う）：
+- 先輩が後輩に話す温度感（教科書調は禁止）
+- 会話例・実体験風エピソードを入れる
+- 読者を責めない
+- まとめはマインドセットで締める（箇条書きおさらいは禁止）
+- 明日できる具体的な一行動で終わる
+
+以下に Write する：
+- `public/{slug}/draft.md`（フロントマター付き記事全文）
+- `public/{slug}/image-prompts.md`（画像生成プロンプト 3案×3箇所）
+
+topics.yaml モードの場合：`config/topics.yaml` の該当トピックの `status` を `generated` に Edit する。
+
+---
+
+## Step 3: レビュー
 
 `public/{slug}/draft.md` を Read する。
 
@@ -74,7 +146,8 @@ slug を `YYYY-MM-DD_（URLの末尾パスセグメント）` で決定する。
 | 確認項目 | 種別 |
 |---------|------|
 | フロントマターが `---` で始まっているか | 🔴 エラー |
-| H1（`#`）が本文中に複数ないか | 🔴 エラー |
+| 本文先頭に `# タイトル` がないか | 🔴 エラー |
+| H1（`#`）が本文中にないか | 🔴 エラー |
 | コードブロックに言語識別子があるか | 🟡 警告 |
 | **太字** の前後にスペースがあるか | 🟡 警告 |
 | `## はじめに` / `## まとめ` があるか | 🟡 警告 |
@@ -83,7 +156,7 @@ slug を `YYYY-MM-DD_（URLの末尾パスセグメント）` で決定する。
 
 - 「先輩が後輩に話す」温度感になっているか（教科書調は禁止）
 - 会話例・実体験風エピソードがあるか
-- 読者を責める表現がないか（「間違っています」「やってはいけません」は NG）
+- 読者を責める表現がないか
 - まとめが「箇条書きおさらい」になっていないか（マインドセットで締める）
 - 「明日できる具体的な行動」で終わっているか
 
@@ -110,7 +183,7 @@ slug を `YYYY-MM-DD_（URLの末尾パスセグメント）` で決定する。
 
 ---
 
-## Step 2: リライト
+## Step 4: リライト
 
 `public/{slug}/draft.md` と `public/{slug}/review.md` を Read する。
 
@@ -123,12 +196,13 @@ slug を `YYYY-MM-DD_（URLの末尾パスセグメント）` で決定する。
 - 修正理由のコメントは書かず、完成版の記事本文のみ出力する
 - **太字** の前後には半角スペース
 - コードブロックに言語識別子を付ける
+- 本文先頭に `# タイトル` を書かない
 
 `public/{slug}/rewrite.md` に Write する。
 
 ---
 
-## Step 3: 採点
+## Step 5: 採点
 
 `public/{slug}/rewrite.md` を Read して100点満点で採点する。
 
@@ -175,23 +249,23 @@ slug を `YYYY-MM-DD_（URLの末尾パスセグメント）` で決定する。
 ```
 
 **判定：**
-- `pass: true`（95点以上）→ Step 4（投稿）へ
-- `pass: false`（95点未満）→ `score.json` と `rewrite.md` を削除して Step 2 に戻る（最大3回）
+- `pass: true`（95点以上）→ Step 6（投稿）へ
+- `pass: false`（95点未満）→ `score.json` と `rewrite.md` を削除して Step 4 に戻る（最大3回）
 - 3回FAILしたら停止して改善点を報告する
 
 ---
 
-## Step 4: 投稿
+## Step 6: 投稿
 
 `public/{slug}/rewrite.md` を Read し、以下の変換をして `public/{slug}.md` に Write する：
 
 - `private: false` → `private: true`（限定共有）
 - `organization_url_name: prum` → `organization_url_name: null`（限定共有時は組織紐づけ不可）
 
-`.env` を Read して `QIITA_TOKEN` を取得し、Bash で実行する：
+Bash で実行する（`.env` を直接 source することでトークンをコマンド文字列に含めない）：
 
 ```bash
-QIITA_TOKEN=<トークン> npx qiita publish {slug}
+export $(grep -v '^#' .env | xargs) && npx qiita publish {slug}
 ```
 
 ---
