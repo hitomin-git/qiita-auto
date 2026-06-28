@@ -15,6 +15,7 @@
       "Edit(config/topics.yaml)",
       "Bash(mkdir *)",
       "Bash(npx qiita publish *)",
+      "Bash(export $(grep -v '^#' .env | xargs) && npx qiita publish *)",
       "Bash(QIITA_TOKEN=*)",
       "WebFetch"
     ]
